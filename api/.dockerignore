@@ -1,0 +1,6 @@
+# this is a file just like the .gitignore file
+# it tells the docker not to copy the node_modules folder to the container
+node_modules
+.gitignore
+
+S
