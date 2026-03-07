@@ -23,6 +23,10 @@ app.get('/', (req, res) => {
       "id":"4",
       "title":"Movie Review: The Batman"
     },
+    {
+      "id":"5",
+      "title":"Song Review: The Weeknd - Blinding Lights"
+    },
   ])
 })
 

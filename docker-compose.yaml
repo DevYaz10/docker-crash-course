@@ -1,0 +1,54 @@
+# specifies the version of the docker-compose file format (3.8 is a stable and widely used version)
+version: '3.8'
+
+# services are the containers that docker-compose will manage
+# this replaces having to manually run "docker run ..." for each container
+services:
+
+  # "api" is the name of the service (you can name it anything)
+  # if you had multiple containers (e.g., a database), you'd add another service below this one
+  api:
+
+    # tells docker-compose WHERE to find the Dockerfile to build the image
+    # ./api means "look in the ./api folder for a Dockerfile"
+    # this replaces: docker build -t [image_name] ./api
+    build: ./api
+
+    # sets a custom name for the container (instead of a random one)
+    # this replaces: --name lesson11compose_c
+    container_name: lesson11compose_api_c
+
+    # maps host port to container port
+    # '4000:4000' means host port 4000 -> container port 4000
+    # this replaces: -p 4000:4000
+    ports:
+      - '4000:4000'
+
+    # volume mounts (same as the -v flags in docker run)
+    volumes:
+      # binds the local ./api folder to /app in the container (syncs file changes)
+      # this replaces: -v C:\full\path\to\api:/app
+      # note: in docker-compose you can use relative paths (./api) instead of full paths!
+      - ./api:/app
+
+      # anonymous volume to protect the container's node_modules from being overwritten
+      # this replaces: -v /app/node_modules
+      - /app/node_modules
+  
+  myblog:
+    build: ./myblog
+    container_name: lesson12compose_myblog_c
+    ports:
+      - '3000:3000'
+    
+    ## React's dev server crashes without stdin_open & tty in Docker
+    # keeps the input stream open so the React dev server doesn't exit (equivalent to -i flag)
+    stdin_open: true
+    # allocates a terminal for the container (equivalent to -t flag)
+    tty: true
+    
+    #! volumes are commented out because on Windows, file system events don't propagate
+    #! from the host into the container, so React's hot-reload won't detect file changes
+    #volumes:
+    #  - ./myblog:/app
+    #  - /app/node_modules
